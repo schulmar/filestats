@@ -267,7 +267,8 @@ int open (__const char *__file, int __oflag, ...)
 	if(!real_open)
 		real_open = (int(*)(__const char *, int, ...)) dlsym(RTLD_NEXT, "open");
 	int fd = real_open(__file, __oflag);
-	files().open(__file, fd);
+	if(fd != -1)
+		files().open(__file, fd);
 	return fd;
 }
 
@@ -277,7 +278,8 @@ int open64 (__const char *__file, int __oflag, ...)
 	if(!real_open64)
 		real_open64 = (int(*)(__const char *, int, ...)) dlsym(RTLD_NEXT, "open64");
 	int fd = real_open64(__file, __oflag);
-	files().open(__file, fd);
+	if(fd != -1)
+		files().open(__file, fd);
 	return fd;
 }
 
