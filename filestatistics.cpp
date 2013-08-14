@@ -15,6 +15,7 @@
 #include <map>
 #include <algorithm>
 #include <iostream>
+#include <iomanip>
 #include <limits>
 
 struct FileStatistics
@@ -109,15 +110,18 @@ private:
 	{
 		if(!nameToStatistic.empty())
 		{
+			std::cout.setf(std::ios::fixed, std::ios::floatfield);
 			std::for_each(nameToStatistic.begin(), nameToStatistic.end(),
 			[&, this](const NameToStatistic::reference file){
 				std::cout << file.first
 							<< "\n\t read: "
 							<< file.second.read.calls << ", "
+							<< std::setprecision(2)
 							<< megaBytesPerSecond(file.second.read)
 							<< "MB/s"
 							<< "\n\twrite: "
 							<< file.second.write.calls << ", "
+							<< std::setprecision(2)
 							<< megaBytesPerSecond(file.second.write)
 							<< "MB/s)\n";
 			});
@@ -150,7 +154,8 @@ FILE *fopen (__const char *__restrict __filename,
 		real_fopen = (FILE *(*)(__const char *__restrict __filename,
 			    __const char *__restrict __modes)) dlsym(RTLD_NEXT, "fopen");
 	FILE* fd = real_fopen(__filename, __modes);
-	files().open(__filename, fileno(fd));
+	if(fd)
+		files().open(__filename, fileno(fd));
 	return fd;
 }
 
@@ -163,7 +168,8 @@ FILE *fopen64 (__const char *__restrict __filename,
 		real_fopen64 = (FILE *(*)(__const char *__restrict __filename,
 			    __const char *__restrict __modes)) dlsym(RTLD_NEXT, "fopen64");
 	FILE* fd = real_fopen64(__filename, __modes);
-	files().open(__filename, fileno(fd));
+	if(fd)
+		files().open(__filename, fileno(fd));
 	return fd;
 }
 
