@@ -27,12 +27,12 @@ struct Files {
   /**
    * @brief Log read from a file with the given descriptor
    */
-  void read(FDType fileDescriptor, unsigned bytes, uint64_t ns);
+  void read(FDType fileDescriptor, unsigned bytes, std::uint64_t ns);
 
   /**
    * @brief Log write to a file with the given descriptor
    */
-  void write(FDType fileDescriptor, unsigned bytes, uint64_t ns);
+  void write(FDType fileDescriptor, unsigned bytes, std::uint64_t ns);
 
   /**
    * @brief Log closing of file
@@ -64,7 +64,6 @@ private:
    * @brief Print the statistics for all files
    */
   void printStatistics();
-
 
   typedef std::map<std::string, FileStatistics> NameToStatistic;
 

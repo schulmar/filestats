@@ -54,8 +54,8 @@ size_t fread(void *__restrict __ptr, size_t __size, size_t __n,
   clock_gettime(CLOCK_MONOTONIC, &tsBefore);
   ssize_t res = real_fread(__ptr, __size, __n, __stream);
   clock_gettime(CLOCK_MONOTONIC, &tsAfter);
-  uint64_t diffTime = 1e9 * (tsAfter.tv_sec - tsBefore.tv_sec) +
-                      tsAfter.tv_nsec - tsBefore.tv_nsec;
+  std::uint64_t diffTime = 1e9 * (tsAfter.tv_sec - tsBefore.tv_sec) +
+                           tsAfter.tv_nsec - tsBefore.tv_nsec;
   files().read(fileno(__stream), res * __size, diffTime);
   return res;
 }
@@ -71,8 +71,8 @@ size_t fwrite(__const void *__restrict __ptr, size_t __size, size_t __n,
   clock_gettime(CLOCK_MONOTONIC, &tsBefore);
   ssize_t res = real_fwrite(__ptr, __size, __n, __s);
   clock_gettime(CLOCK_MONOTONIC, &tsAfter);
-  uint64_t diffTime = 1e9 * (tsAfter.tv_sec - tsBefore.tv_sec) +
-                      tsAfter.tv_nsec - tsBefore.tv_nsec;
+  std::uint64_t diffTime = 1e9 * (tsAfter.tv_sec - tsBefore.tv_sec) +
+                           tsAfter.tv_nsec - tsBefore.tv_nsec;
   files().write(fileno(__s), res * __size, diffTime);
   return res;
 }
@@ -89,8 +89,8 @@ size_t fread_unlocked(void *__restrict __ptr, size_t __size, size_t __n,
   clock_gettime(CLOCK_MONOTONIC, &tsBefore);
   ssize_t res = real_fread_unlocked(__ptr, __size, __n, __stream);
   clock_gettime(CLOCK_MONOTONIC, &tsAfter);
-  uint64_t diffTime = 1e9 * (tsAfter.tv_sec - tsBefore.tv_sec) +
-                      tsAfter.tv_nsec - tsBefore.tv_nsec;
+  std::uint64_t diffTime = 1e9 * (tsAfter.tv_sec - tsBefore.tv_sec) +
+                           tsAfter.tv_nsec - tsBefore.tv_nsec;
   files().read(fileno(__stream), res * __size, diffTime);
   return res;
 }
@@ -107,8 +107,8 @@ size_t fwrite_unlocked(__const void *__restrict __ptr, size_t __size,
   clock_gettime(CLOCK_MONOTONIC, &tsBefore);
   ssize_t res = real_fwrite_unlocked(__ptr, __size, __n, __s);
   clock_gettime(CLOCK_MONOTONIC, &tsAfter);
-  uint64_t diffTime = 1e9 * (tsAfter.tv_sec - tsBefore.tv_sec) +
-                      tsAfter.tv_nsec - tsBefore.tv_nsec;
+  std::uint64_t diffTime = 1e9 * (tsAfter.tv_sec - tsBefore.tv_sec) +
+                           tsAfter.tv_nsec - tsBefore.tv_nsec;
   files().write(fileno(__s), res * __size, diffTime);
   return res;
 }
@@ -169,8 +169,8 @@ ssize_t read(int __fd, void *__buf, size_t __nbytes) {
   clock_gettime(CLOCK_MONOTONIC, &tsBefore);
   ssize_t res = real_read(__fd, __buf, __nbytes);
   clock_gettime(CLOCK_MONOTONIC, &tsAfter);
-  uint64_t diffTime = 1e9 * (tsAfter.tv_sec - tsBefore.tv_sec) +
-                      tsAfter.tv_nsec - tsBefore.tv_nsec;
+  std::uint64_t diffTime = 1e9 * (tsAfter.tv_sec - tsBefore.tv_sec) +
+                           tsAfter.tv_nsec - tsBefore.tv_nsec;
   files().read(__fd, res, diffTime);
   return res;
 }
@@ -184,8 +184,8 @@ ssize_t write(int __fd, __const void *__buf, size_t __n) {
   clock_gettime(CLOCK_MONOTONIC, &tsBefore);
   ssize_t res = real_write(__fd, __buf, __n);
   clock_gettime(CLOCK_MONOTONIC, &tsAfter);
-  uint64_t diffTime = 1e9 * (tsAfter.tv_sec - tsBefore.tv_sec) +
-                      tsAfter.tv_nsec - tsBefore.tv_nsec;
+  std::uint64_t diffTime = 1e9 * (tsAfter.tv_sec - tsBefore.tv_sec) +
+                           tsAfter.tv_nsec - tsBefore.tv_nsec;
   files().write(__fd, res, diffTime);
   return res;
 }

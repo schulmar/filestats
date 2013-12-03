@@ -23,7 +23,7 @@ void Files::open(const std::string &fileName, FDType fileDescriptor) {
   printTimed();
 }
 
-void Files::read(FDType fileDescriptor, unsigned bytes, uint64_t ns) {
+void Files::read(FDType fileDescriptor, unsigned bytes, std::uint64_t ns) {
   auto iter = fileDescriptorToFile.find(fileDescriptor);
   if (iter != fileDescriptorToFile.end()) {
     iter->second->second.read.bytes += bytes;
@@ -33,7 +33,7 @@ void Files::read(FDType fileDescriptor, unsigned bytes, uint64_t ns) {
   }
 }
 
-void Files::write(FDType fileDescriptor, unsigned bytes, uint64_t ns) {
+void Files::write(FDType fileDescriptor, unsigned bytes, std::uint64_t ns) {
   auto iter = fileDescriptorToFile.find(fileDescriptor);
   if (iter != fileDescriptorToFile.end()) {
     iter->second->second.write.bytes += bytes;
