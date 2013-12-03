@@ -72,6 +72,11 @@ private:
    */
   void printTimed();
 
+  /**
+   * @brief Add other Files statistics
+   */
+  Files& operator+=(const Files& rhs);
+
   /// maps registered filenames to their statistics
   NameToStatistic nameToStatistic;
   typedef std::map<FDType, NameToStatistic::iterator> FileDescriptorToFile;

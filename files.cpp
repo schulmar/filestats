@@ -64,6 +64,17 @@ void Files::printTimed() {
   }
 }
 
+Files& Files::operator+=(const Files& rhs) {
+  /// add old statistics and create
+  for(const auto &statistic : rhs)
+    nameToStatistic[statistic.first] += statistic.second;
+  /// calculate the mapping for the new file descriptors
+  for(const auto &descriptor : rhs.fileDescriptorToFile)
+    if(fileDescriptorToFile.find(descriptor.first) == fileDescriptorToFile.end())
+      fileDescriptorToFile[descriptor.first] = nameToStatistic.find(descriptor.second->first);
+  return *this;
+}
+
 namespace std {
 /**
  * @brief output the amount formatted onto the

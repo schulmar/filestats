@@ -23,6 +23,11 @@ struct FileStatistics {
     unsigned long bytes;
     /// the sum of nanoSeconds to finish the calls
     std::uint64_t nanoSeconds;
+
+    /**
+     * @brief Add another Amount to this
+     */
+    Amount &operator+=(const Amount &rhs);
   };
 
   /// statistics for reading and writing
@@ -31,7 +36,12 @@ struct FileStatistics {
   /**
    * @brief Initialize all statistics to zero
    */
-  FileStatistics() : read{ 0, 0, 0 }, write{ 0, 0, 0 } {}
+  FileStatistics();
+
+  /**
+   * @brief Add another Filestatistic to this
+   */
+  FileStatistics &operator+=(const FileStatistics &);
 };
 
 /**
