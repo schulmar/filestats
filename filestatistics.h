@@ -35,7 +35,7 @@ struct FileStatistics {
 };
 
 /**
- * \brief Get the MB/s for an Amount
+ * @brief Get the MB/s for an Amount
  */
 double megaBytesPerSecond(const FileStatistics::Amount &amount);
 
