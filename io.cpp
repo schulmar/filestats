@@ -40,15 +40,21 @@ FILE *fopen64(__const char *__restrict __filename,
   return fd;
 }
 
+/// measure the given function call, store its result in res and the time in
+/// diffTime
+#define MEASURE(FUNCTION_CALL)                                                 \
+  timespec tsBefore, tsAfter;                                                  \
+  clock_gettime(CLOCK_MONOTONIC, &tsBefore);                                   \
+  typedef decltype(FUNCTION_CALL) RETURN_TYPE;                                 \
+  RETURN_TYPE res = FUNCTION_CALL;                                             \
+  clock_gettime(CLOCK_MONOTONIC, &tsAfter);                                    \
+  std::uint64_t diffTime = 1e9 * (tsAfter.tv_sec - tsBefore.tv_sec) +          \
+                           tsAfter.tv_nsec - tsBefore.tv_nsec;
+
 size_t fread(void *__restrict __ptr, size_t __size, size_t __n,
              FILE *__restrict __stream) {
   GET_REAL(fread);
-  timespec tsBefore, tsAfter;
-  clock_gettime(CLOCK_MONOTONIC, &tsBefore);
-  ssize_t res = real_fread(__ptr, __size, __n, __stream);
-  clock_gettime(CLOCK_MONOTONIC, &tsAfter);
-  std::uint64_t diffTime = 1e9 * (tsAfter.tv_sec - tsBefore.tv_sec) +
-                           tsAfter.tv_nsec - tsBefore.tv_nsec;
+  MEASURE(real_fread(__ptr, __size, __n, __stream));
   files().read(fileno(__stream), res * __size, diffTime);
   return res;
 }
@@ -56,12 +62,7 @@ size_t fread(void *__restrict __ptr, size_t __size, size_t __n,
 size_t fwrite(__const void *__restrict __ptr, size_t __size, size_t __n,
               FILE *__restrict __s) {
   GET_REAL(fwrite);
-  timespec tsBefore, tsAfter;
-  clock_gettime(CLOCK_MONOTONIC, &tsBefore);
-  ssize_t res = real_fwrite(__ptr, __size, __n, __s);
-  clock_gettime(CLOCK_MONOTONIC, &tsAfter);
-  std::uint64_t diffTime = 1e9 * (tsAfter.tv_sec - tsBefore.tv_sec) +
-                           tsAfter.tv_nsec - tsBefore.tv_nsec;
+  MEASURE(real_fwrite(__ptr, __size, __n, __s));
   files().write(fileno(__s), res * __size, diffTime);
   return res;
 }
@@ -69,12 +70,7 @@ size_t fwrite(__const void *__restrict __ptr, size_t __size, size_t __n,
 size_t fread_unlocked(void *__restrict __ptr, size_t __size, size_t __n,
                       FILE *__restrict __stream) {
   GET_REAL(fread_unlocked);
-  timespec tsBefore, tsAfter;
-  clock_gettime(CLOCK_MONOTONIC, &tsBefore);
-  ssize_t res = real_fread_unlocked(__ptr, __size, __n, __stream);
-  clock_gettime(CLOCK_MONOTONIC, &tsAfter);
-  std::uint64_t diffTime = 1e9 * (tsAfter.tv_sec - tsBefore.tv_sec) +
-                           tsAfter.tv_nsec - tsBefore.tv_nsec;
+  MEASURE(real_fread_unlocked(__ptr, __size, __n, __stream));
   files().read(fileno(__stream), res * __size, diffTime);
   return res;
 }
@@ -82,12 +78,7 @@ size_t fread_unlocked(void *__restrict __ptr, size_t __size, size_t __n,
 size_t fwrite_unlocked(__const void *__restrict __ptr, size_t __size,
                        size_t __n, FILE *__restrict __s) {
   GET_REAL(fwrite_unlocked)
-  timespec tsBefore, tsAfter;
-  clock_gettime(CLOCK_MONOTONIC, &tsBefore);
-  ssize_t res = real_fwrite_unlocked(__ptr, __size, __n, __s);
-  clock_gettime(CLOCK_MONOTONIC, &tsAfter);
-  std::uint64_t diffTime = 1e9 * (tsAfter.tv_sec - tsBefore.tv_sec) +
-                           tsAfter.tv_nsec - tsBefore.tv_nsec;
+  MEASURE(real_fwrite_unlocked(__ptr, __size, __n, __s));
   files().write(fileno(__s), res * __size, diffTime);
   return res;
 }
@@ -131,24 +122,14 @@ int close(int __fd) {
 
 ssize_t read(int __fd, void *__buf, size_t __nbytes) {
   GET_REAL(read);
-  timespec tsBefore, tsAfter;
-  clock_gettime(CLOCK_MONOTONIC, &tsBefore);
-  ssize_t res = real_read(__fd, __buf, __nbytes);
-  clock_gettime(CLOCK_MONOTONIC, &tsAfter);
-  std::uint64_t diffTime = 1e9 * (tsAfter.tv_sec - tsBefore.tv_sec) +
-                           tsAfter.tv_nsec - tsBefore.tv_nsec;
+  MEASURE(real_read(__fd, __buf, __nbytes));
   files().read(__fd, res, diffTime);
   return res;
 }
 
 ssize_t write(int __fd, __const void *__buf, size_t __n) {
   GET_REAL(write);
-  timespec tsBefore, tsAfter;
-  clock_gettime(CLOCK_MONOTONIC, &tsBefore);
-  ssize_t res = real_write(__fd, __buf, __n);
-  clock_gettime(CLOCK_MONOTONIC, &tsAfter);
-  std::uint64_t diffTime = 1e9 * (tsAfter.tv_sec - tsBefore.tv_sec) +
-                           tsAfter.tv_nsec - tsBefore.tv_nsec;
+  MEASURE(real_write(__fd, __buf, __n));
   files().write(__fd, res, diffTime);
   return res;
 }
