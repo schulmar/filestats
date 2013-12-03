@@ -39,6 +39,18 @@ struct Files {
    */
   void close(FDType fileDescriptor);
 
+  typedef std::map<std::string, FileStatistics> NameToStatistic;
+
+  /**
+   * @return Iterator to the first file in this statistic
+   */
+  NameToStatistic::const_iterator begin()const;
+
+  /**
+   * @return Iterator to the last file in this statistic
+   */
+  NameToStatistic::const_iterator end()const;
+
 private:
   /// allow the files function to create an instance of this class
   friend Files &files();
@@ -64,8 +76,6 @@ private:
    * @brief Print the statistics for all files
    */
   void printStatistics();
-
-  typedef std::map<std::string, FileStatistics> NameToStatistic;
 
   /// maps registered filenames to their statistics
   NameToStatistic nameToStatistic;

@@ -48,6 +48,14 @@ void Files::close(FDType fileDescriptor) {
   printStatistics();
 }
 
+Files::NameToStatistic::const_iterator Files::begin() const {
+  return nameToStatistic.begin();
+}
+
+Files::NameToStatistic::const_iterator Files::end() const {
+  return nameToStatistic.end();
+}
+
 void Files::printTimed() {
   time_t current = time(nullptr);
   if (current - lastTime > 10) {
