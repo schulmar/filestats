@@ -15,7 +15,7 @@
 Files::Files()
 : nameToStatistic(), fileDescriptorToFile(), lastTime(time(nullptr)) {}
 
-Files::~Files() { printStatistics(); }
+Files::~Files() { printStatistics(*this); }
 
 void Files::open(const std::string &fileName, FDType fileDescriptor) {
   fileDescriptorToFile[fileDescriptor] =
@@ -45,7 +45,7 @@ void Files::write(FDType fileDescriptor, unsigned bytes, std::uint64_t ns) {
 
 void Files::close(FDType fileDescriptor) {
   fileDescriptorToFile.erase(fileDescriptor);
-  printStatistics();
+  printStatistics(*this);
 }
 
 Files::NameToStatistic::const_iterator Files::begin() const {
@@ -60,22 +60,31 @@ void Files::printTimed() {
   time_t current = time(nullptr);
   if (current - lastTime > 10) {
     lastTime = current;
-    printStatistics();
+    printStatistics(*this);
   }
 }
 
-void Files::printStatistics() {
-  if (!nameToStatistic.empty()) {
+namespace std {
+/**
+ * @brief output the amount formatted onto the
+ */
+static std::ostream &operator<<(std::ostream &stream,
+                                const FileStatistics::Amount &amount) {
+  stream << amount.calls << ", " << std::setprecision(2)
+         << megaBytesPerSecond(amount) << "MB/s";
+  return stream;
+}
+}
+
+void printSingleFileStatistic(Files::NameToStatistic::const_reference file) {
+  std::cout << file.first << "\n\t read: " << file.second.read
+            << "\n\twrite: " << file.second.write << "\n";
+}
+
+void printStatistics(const Files &files) {
+  if (files.begin() != files.end()) {
     std::cout.setf(std::ios::fixed, std::ios::floatfield);
-    std::for_each(nameToStatistic.begin(), nameToStatistic.end(),
-                  [&, this](const NameToStatistic::reference file) {
-      std::cout << file.first << "\n\t read: " << file.second.read.calls << ", "
-                << std::setprecision(2) << megaBytesPerSecond(file.second.read)
-                << "MB/s"
-                << "\n\twrite: " << file.second.write.calls << ", "
-                << std::setprecision(2) << megaBytesPerSecond(file.second.write)
-                << "MB/s)\n";
-    });
+    std::for_each(files.begin(), files.end(), &printSingleFileStatistic);
     std::cout << std::endl;
   }
 }

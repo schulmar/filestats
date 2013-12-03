@@ -72,11 +72,6 @@ private:
    */
   void printTimed();
 
-  /**
-   * @brief Print the statistics for all files
-   */
-  void printStatistics();
-
   /// maps registered filenames to their statistics
   NameToStatistic nameToStatistic;
   typedef std::map<FDType, NameToStatistic::iterator> FileDescriptorToFile;
@@ -85,6 +80,11 @@ private:
   /// the last time print was executed
   time_t lastTime;
 };
+
+/**
+ * @brief Print the statistics for all files
+ */
+void printStatistics(const Files &files);
 
 /**
  * @return A single instance of the Files class
