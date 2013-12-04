@@ -77,6 +77,11 @@ private:
    */
   Files& operator+=(const Files& rhs);
 
+  /**
+   * @brief Reset the statistics but still store the file mapping
+   */
+  void resetStatistics();
+
   /// maps registered filenames to their statistics
   NameToStatistic nameToStatistic;
   typedef std::map<FDType, NameToStatistic::iterator> FileDescriptorToFile;

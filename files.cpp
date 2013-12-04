@@ -75,6 +75,11 @@ Files& Files::operator+=(const Files& rhs) {
   return *this;
 }
 
+void Files::resetStatistics() {
+  for(auto &statistic : nameToStatistic)
+      statistic.second = FileStatistics();
+}
+
 namespace std {
 /**
  * @brief output the amount formatted onto the
