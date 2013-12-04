@@ -20,6 +20,18 @@ struct Files {
   typedef intptr_t FDType;
 
   /**
+   * @brief Create a new instance of this class
+   *
+   * This must only be called in files()
+   */
+  Files();
+
+  /**
+   * @brief Print final statistics (called on programm end)
+   */
+  ~Files();
+
+  /**
    * @brief Log opening of a new file with the given path
    */
   void open(const std::string &fileName, FDType fileDescriptor);
@@ -51,27 +63,6 @@ struct Files {
    */
   NameToStatistic::const_iterator end()const;
 
-private:
-  /// allow the files function to create an instance of this class
-  friend Files &files();
-
-  /**
-   * @brief Create a new instance of this class
-   *
-   * This must only be called in files()
-   */
-  Files();
-
-  /**
-   * @brief Print final statistics (called on programm end)
-   */
-  ~Files();
-
-  /**
-   * @brief Print the current statistics every x seconds
-   */
-  void printTimed();
-
   /**
    * @brief Add other Files statistics
    */
@@ -81,6 +72,7 @@ private:
    * @brief Reset the statistics but still store the file mapping
    */
   void resetStatistics();
+private:
 
   /// maps registered filenames to their statistics
   NameToStatistic nameToStatistic;
@@ -95,10 +87,5 @@ private:
  * @brief Print the statistics for all files
  */
 void printStatistics(const Files &files);
-
-/**
- * @return A single instance of the Files class
- */
-Files &files();
 
 #endif /* FILES_H_ */

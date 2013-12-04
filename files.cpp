@@ -20,7 +20,6 @@ Files::~Files() { printStatistics(*this); }
 void Files::open(const std::string &fileName, FDType fileDescriptor) {
   fileDescriptorToFile[fileDescriptor] =
       nameToStatistic.insert(std::make_pair(fileName, FileStatistics())).first;
-  printTimed();
 }
 
 void Files::read(FDType fileDescriptor, unsigned bytes, std::uint64_t ns) {
@@ -29,7 +28,6 @@ void Files::read(FDType fileDescriptor, unsigned bytes, std::uint64_t ns) {
     iter->second->second.read.bytes += bytes;
     iter->second->second.read.nanoSeconds += ns;
     ++(iter->second->second.read.calls);
-    printTimed();
   }
 }
 
@@ -39,13 +37,11 @@ void Files::write(FDType fileDescriptor, unsigned bytes, std::uint64_t ns) {
     iter->second->second.write.bytes += bytes;
     iter->second->second.write.nanoSeconds += ns;
     ++(iter->second->second.write.calls);
-    printTimed();
   }
 }
 
 void Files::close(FDType fileDescriptor) {
   fileDescriptorToFile.erase(fileDescriptor);
-  printStatistics(*this);
 }
 
 Files::NameToStatistic::const_iterator Files::begin() const {
@@ -54,14 +50,6 @@ Files::NameToStatistic::const_iterator Files::begin() const {
 
 Files::NameToStatistic::const_iterator Files::end() const {
   return nameToStatistic.end();
-}
-
-void Files::printTimed() {
-  time_t current = time(nullptr);
-  if (current - lastTime > 10) {
-    lastTime = current;
-    printStatistics(*this);
-  }
 }
 
 Files& Files::operator+=(const Files& rhs) {
@@ -103,9 +91,4 @@ void printStatistics(const Files &files) {
     std::for_each(files.begin(), files.end(), &printSingleFileStatistic);
     std::cout << std::endl;
   }
-}
-
-Files &files() {
-  static Files files;
-  return files;
 }
