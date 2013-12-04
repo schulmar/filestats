@@ -11,8 +11,10 @@ DeltaTimeExecutor::DeltaTimeExecutor(Callback callback,
   callback_(callback) {}
 
 void DeltaTimeExecutor::callIfTimeOver() {
-  if (!lastTime_ || *lastTime_ - clock_.now() > minimumInterval_) {
-    callback_();
+  if (!lastTime_ || clock_.now() - *lastTime_ > minimumInterval_) {
+    // reset clock before the callback to avoid reentrance when callback
+    // triggers callIfTimeOver
     lastTime_ = clock_.now();
+    callback_();
   }
 }
