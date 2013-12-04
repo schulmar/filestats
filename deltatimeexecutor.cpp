@@ -1,8 +1,6 @@
-/*
- * deltatimeexecutor.cpp
- *
- *  Created on: 04.12.2013
- *      Author: martin
+/**
+ * @file deltatimeexecutor.cpp
+ * @date 04.12.2013
  */
 
 #include "deltatimeexecutor.h"

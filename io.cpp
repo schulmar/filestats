@@ -1,8 +1,6 @@
-/*
- * io.cpp
- *
- *  Created on: 03.12.2013
- *      Author: martin
+/**
+ * @file io.cpp
+ * @date 03.12.2013
  */
 
 #include "io.h"

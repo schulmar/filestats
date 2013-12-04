@@ -1,8 +1,6 @@
-/*
- * deltatimeexecutor.h
- *
- *  Created on: 04.12.2013
- *      Author: martin
+/**
+ * @file deltatimeexecutor.h
+ * @date 04.12.2013
  */
 
 #ifndef DELTATIMEEXECUTOR_H_
