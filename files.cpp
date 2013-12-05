@@ -1,8 +1,6 @@
-/*
- * files.cpp
- *
- *  Created on: 03.12.2013
- *      Author: martin
+/**
+ * @brief files.cpp
+ * @date 03.12.2013
  */
 
 #include "files.h"

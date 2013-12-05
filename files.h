@@ -1,8 +1,6 @@
-/*
- * files.h
- *
- *  Created on: 03.12.2013
- *      Author: martin
+/**
+ * @file files.h
+ * @date 03.12.2013
  */
 
 #ifndef FILES_H_
