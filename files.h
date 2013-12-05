@@ -25,11 +25,6 @@ struct Files {
   Files();
 
   /**
-   * @brief Print final statistics (called on programm end)
-   */
-  ~Files();
-
-  /**
    * @brief Log opening of a new file with the given path
    */
   void open(const std::string &fileName, FDType fileDescriptor);

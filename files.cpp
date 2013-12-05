@@ -13,8 +13,6 @@
 Files::Files()
 : nameToStatistic(), fileDescriptorToFile(), lastTime(time(nullptr)) {}
 
-Files::~Files() { printStatistics(*this); }
-
 void Files::open(const std::string &fileName, FDType fileDescriptor) {
   fileDescriptorToFile[fileDescriptor] =
       nameToStatistic.insert(std::make_pair(fileName, FileStatistics())).first;
