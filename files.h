@@ -49,24 +49,24 @@ struct Files {
   /**
    * @return Iterator to the first file in this statistic
    */
-  NameToStatistic::const_iterator begin()const;
+  NameToStatistic::const_iterator begin() const;
 
   /**
    * @return Iterator to the last file in this statistic
    */
-  NameToStatistic::const_iterator end()const;
+  NameToStatistic::const_iterator end() const;
 
   /**
    * @brief Add other Files statistics
    */
-  Files& operator+=(const Files& rhs);
+  Files &operator+=(const Files &rhs);
 
   /**
    * @brief Reset the statistics but still store the file mapping
    */
   void resetStatistics();
-private:
 
+private:
   /// maps registered filenames to their statistics
   NameToStatistic nameToStatistic;
   typedef std::map<FDType, NameToStatistic::iterator> FileDescriptorToFile;
@@ -77,8 +77,8 @@ private:
 };
 
 /**
- * @brief Print the statistics for all files
+ * @brief Print the statistics for all files on a stream
  */
-void printStatistics(const Files &files);
+void printStatistics(std::ostream &stream, const Files &files);
 
 #endif /* FILES_H_ */

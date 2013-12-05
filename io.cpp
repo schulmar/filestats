@@ -10,12 +10,16 @@
 #include <unistd.h>
 #include <thread>
 #include <iostream>
+#include <fstream>
+#include <syscall.h>
+#include <string>
 
 #include "files.h"
 #include "deltatimeexecutor.h"
 #include "destructionexecutor.h"
+#include "getlogfilename.h"
 
-#include <syscall.h>
+static const std::string logFileName = getLogFileName();
 
 /**
  * @return The global ID of the current thread
@@ -26,19 +30,21 @@ static pid_t getCurrentThreadId() { return syscall(SYS_gettid); }
  * @brief Get the statistics and print them if necessary
  */
 static Files &files() {
+  static std::ofstream log(logFileName);
   static Files sinceLast;
   static Files total;
   // print the final statistics on exit
   static DestructionExecutor finalExecutor([&]() {
-    std::cout << "Statistics for thread " << getCurrentThreadId() << "\n";
-    printStatistics(sinceLast);
-    std::cout << "Total statistics for thread " << getCurrentThreadId()
-              << ":\n";
+    log << "Statistics for thread " << getCurrentThreadId() << "\n";
+    printStatistics(log, sinceLast);
+    log << "Total statistics for thread " << getCurrentThreadId() << ":\n";
     total += sinceLast;
-    printStatistics(total);
+    printStatistics(log, total);
   });
   static DeltaTimeExecutor executor([&]() {
-                                      printStatistics(sinceLast);
+                                      log << "Statistics for thread "
+                                          << getCurrentThreadId() << "\n";
+                                      printStatistics(log, sinceLast);
                                       total += sinceLast;
                                       sinceLast.resetStatistics();
                                     },
@@ -61,7 +67,7 @@ FILE *fopen(__const char *__restrict __filename,
             __const char *__restrict __modes) {
   GET_REAL(fopen);
   FILE *fd = real_fopen(__filename, __modes);
-  if (fd)
+  if (fd && logFileName != __filename)
     files().open(__filename, fileno(fd));
   return fd;
 }
@@ -70,7 +76,7 @@ FILE *fopen64(__const char *__restrict __filename,
               __const char *__restrict __modes) {
   GET_REAL(fopen64);
   FILE *fd = real_fopen64(__filename, __modes);
-  if (fd)
+  if (fd && logFileName != __filename)
     files().open(__filename, fileno(fd));
   return fd;
 }
@@ -121,21 +127,23 @@ size_t fwrite_unlocked(__const void *__restrict __ptr, size_t __size,
 int creat(__const char *__file, __mode_t __mode) {
   GET_REAL(creat);
   int fd = real_creat(__file, __mode);
-  files().open(__file, fd);
+  if (fd && logFileName != __file)
+    files().open(__file, fd);
   return fd;
 }
 
 int creat64(__const char *__file, __mode_t __mode) {
   GET_REAL(creat64);
   int fd = real_creat64(__file, __mode);
-  files().open(__file, fd);
+  if (fd && logFileName != __file)
+    files().open(__file, fd);
   return fd;
 }
 
 int open(__const char *__file, int __oflag, ...) {
   GET_REAL(open);
   int fd = real_open(__file, __oflag);
-  if (fd != -1)
+  if (fd != -1 && logFileName != __file)
     files().open(__file, fd);
   return fd;
 }
@@ -143,7 +151,7 @@ int open(__const char *__file, int __oflag, ...) {
 int open64(__const char *__file, int __oflag, ...) {
   GET_REAL(open64);
   int fd = real_open64(__file, __oflag);
-  if (fd != -1)
+  if (fd != -1 && logFileName != __file)
     files().open(__file, fd);
   return fd;
 }

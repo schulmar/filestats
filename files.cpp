@@ -48,20 +48,22 @@ Files::NameToStatistic::const_iterator Files::end() const {
   return nameToStatistic.end();
 }
 
-Files& Files::operator+=(const Files& rhs) {
+Files &Files::operator+=(const Files &rhs) {
   /// add old statistics and create
-  for(const auto &statistic : rhs)
+  for (const auto &statistic : rhs)
     nameToStatistic[statistic.first] += statistic.second;
   /// calculate the mapping for the new file descriptors
-  for(const auto &descriptor : rhs.fileDescriptorToFile)
-    if(fileDescriptorToFile.find(descriptor.first) == fileDescriptorToFile.end())
-      fileDescriptorToFile[descriptor.first] = nameToStatistic.find(descriptor.second->first);
+  for (const auto &descriptor : rhs.fileDescriptorToFile)
+    if (fileDescriptorToFile.find(descriptor.first) ==
+        fileDescriptorToFile.end())
+      fileDescriptorToFile[descriptor.first] =
+          nameToStatistic.find(descriptor.second->first);
   return *this;
 }
 
 void Files::resetStatistics() {
-  for(auto &statistic : nameToStatistic)
-      statistic.second = FileStatistics();
+  for (auto &statistic : nameToStatistic)
+    statistic.second = FileStatistics();
 }
 
 namespace std {
@@ -76,15 +78,19 @@ static std::ostream &operator<<(std::ostream &stream,
 }
 }
 
-void printSingleFileStatistic(Files::NameToStatistic::const_reference file) {
-  std::cout << file.first << "\n\t read: " << file.second.read
-            << "\n\twrite: " << file.second.write << "\n";
+static void
+printSingleFileStatistic(std::ostream &stream,
+                         Files::NameToStatistic::const_reference file) {
+  stream << file.first << "\n\t read: " << file.second.read
+         << "\n\twrite: " << file.second.write << "\n";
 }
 
-void printStatistics(const Files &files) {
+void printStatistics(std::ostream &stream, const Files &files) {
   if (files.begin() != files.end()) {
-    std::cout.setf(std::ios::fixed, std::ios::floatfield);
-    std::for_each(files.begin(), files.end(), &printSingleFileStatistic);
-    std::cout << std::endl;
+    stream.setf(std::ios::fixed, std::ios::floatfield);
+    std::for_each(files.begin(), files.end(),
+                  std::bind(&printSingleFileStatistic, std::ref(stream),
+                            std::placeholders::_1));
+    stream << std::endl;
   }
 }
