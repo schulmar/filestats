@@ -5,6 +5,7 @@ SET(CMAKE_CXX_FLAGS "-std=c++11 -Wall -pedantic -fPIC")
 add_library(filestatistics SHARED filestatistics.cpp 
 								  io.cpp
 								  files.cpp
-								  deltatimeexecutor.cpp)
+								  deltatimeexecutor.cpp
+								  getlogfilename.cpp)
 								  
 TARGET_LINK_LIBRARIES(filestatistics dl rt)
