@@ -9,7 +9,6 @@
 #include <cstdint>
 #include <functional>
 #include <chrono>
-#include <boost/optional.hpp>
 
 /**
  * @brief Executes a callback in given intervals if called
@@ -23,6 +22,9 @@ struct DeltaTimeExecutor {
   /**
    * @param callback Function to call
    * @param minimumInterval minimal time interval between two function calls
+   *
+   * The callback will not be called on construction, but the interval starts
+   * now
    */
   DeltaTimeExecutor(Callback callback, Interval minimumInterval);
 
@@ -38,7 +40,7 @@ private:
   /// the minimal time interval between two calls of the callback
   Interval minimumInterval_;
   /// the last time we executed the callback
-  boost::optional<Timestamp> lastTime_;
+  Timestamp lastTime_;
   /// the callback which should be called
   Callback callback_;
 };
