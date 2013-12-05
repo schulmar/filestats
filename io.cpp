@@ -20,31 +20,30 @@
 /**
  * @return The global ID of the current thread
  */
-static pid_t getCurrentThreadId() {
-  return syscall(SYS_gettid);
-}
+static pid_t getCurrentThreadId() { return syscall(SYS_gettid); }
 
 /**
  * @brief Get the statistics and print them if necessary
  */
-static Files& files() {
+static Files &files() {
   static Files sinceLast;
   static Files total;
   // print the final statistics on exit
-  static DestructionExecutor finalExecutor([&](){
+  static DestructionExecutor finalExecutor([&]() {
     std::cout << "Statistics for thread " << getCurrentThreadId() << "\n";
     printStatistics(sinceLast);
-    std::cout << "Total statistics for thread " << getCurrentThreadId() << ":\n";
+    std::cout << "Total statistics for thread " << getCurrentThreadId()
+              << ":\n";
     total += sinceLast;
     printStatistics(total);
   });
   static DeltaTimeExecutor executor([&]() {
-
                                       printStatistics(sinceLast);
                                       total += sinceLast;
                                       sinceLast.resetStatistics();
                                     },
-                                    std::chrono::microseconds(1000 * 1000 * 10));
+                                    std::chrono::microseconds(1000 * 1000 *
+                                                              10));
   executor.callIfTimeOver();
   return sinceLast;
 }
