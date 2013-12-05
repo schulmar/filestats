@@ -8,10 +8,21 @@
 #include <dlfcn.h>
 #include <glob.h>
 #include <unistd.h>
+#include <thread>
+#include <iostream>
 
 #include "files.h"
 #include "deltatimeexecutor.h"
 #include "destructionexecutor.h"
+
+#include <syscall.h>
+
+/**
+ * @return The global ID of the current thread
+ */
+static pid_t getCurrentThreadId() {
+  return syscall(SYS_gettid);
+}
 
 /**
  * @brief Get the statistics and print them if necessary
@@ -21,12 +32,14 @@ static Files& files() {
   static Files total;
   // print the final statistics on exit
   static DestructionExecutor finalExecutor([&](){
+    std::cout << "Statistics for thread " << getCurrentThreadId() << "\n";
     printStatistics(sinceLast);
-    std::cout << "Total statistics:\n";
+    std::cout << "Total statistics for thread " << getCurrentThreadId() << ":\n";
     total += sinceLast;
     printStatistics(total);
   });
   static DeltaTimeExecutor executor([&]() {
+
                                       printStatistics(sinceLast);
                                       total += sinceLast;
                                       sinceLast.resetStatistics();
